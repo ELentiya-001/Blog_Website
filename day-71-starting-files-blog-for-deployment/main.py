@@ -11,6 +11,7 @@ from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 import os
+
 # Optional: add contact me email functionality (Day 60)
 # import smtplib
 
@@ -23,6 +24,16 @@ Bootstrap5(app)
 # Configure Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+# CREATE DATABASE
+class Base(DeclarativeBase):
+    pass
+
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///posts.db")
+db = SQLAlchemy(model_class=Base)
+db.init_app(app)
 
 
 @login_manager.user_loader
@@ -39,16 +50,6 @@ gravatar = Gravatar(app,
                     force_lower=False,
                     use_ssl=False,
                     base_url=None)
-
-
-# CREATE DATABASE
-class Base(DeclarativeBase):
-    pass
-
-
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///posts.db")
-db = SQLAlchemy(model_class=Base)
-db.init_app(app)
 
 
 # CONFIGURE TABLES
@@ -117,6 +118,7 @@ def admin_only(f):
 @app.route('/register', methods=["GET", "POST"])
 def register():
     form = RegisterForm()
+    # print("hereeee")
     if form.validate_on_submit():
 
         # Check if user email is already present in the database.
@@ -147,6 +149,7 @@ def register():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
+    # print("OVER HEREEEEE")
     form = LoginForm()
     if form.validate_on_submit():
         password = form.password.data
