@@ -31,7 +31,9 @@ class Base(DeclarativeBase):
     pass
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI", "sqlite:///posts.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("POSTGRES_URL")
+# Assuming you have a .env file with value POSTGRES_URL holding the connection string from vercel dash.
+# eg: POSTGRES_URL="postgresql://default:************@ep-lucky-rice-a4humd97-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require"
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
